@@ -1,6 +1,20 @@
 # HackBama EcoCAR autonomous autocross submission
 
-Submit **`submission/hackbama.py`** as the single-file team controller. It defines
+> **Final validation update (17 October 2026):** The V4 file below remains
+> byte unchanged, but the final audit found deterministic tight-pair and
+> state-reset bugs. Fifty new generated courses were 32/50 clean. Do not
+> freeze this exact file without resolving the confirmed blockers and rerunning
+> validation. See [FINAL_VALIDATION_REPORT.md](FINAL_VALIDATION_REPORT.md).
+> Historical experiment results and the original recommendation below are
+> retained as records of earlier testing.
+
+> **V6 candidate update (17 October 2026):** The confirmed bugs were fixed in
+> `controllers/hackbama_v6.py`. The candidate passed 112 tests, the official
+> bicycle selftest, and matched 50-course and 40-run perturbation retests.
+> See [V6_RETEST_REPORT.md](V6_RETEST_REPORT.md). The submission file below is
+> still V4; V6 has not been copied into it.
+
+Historical V4 submission instruction: submit **`submission/hackbama.py`** as the single-file team controller. It defines
 `HackBamaController`, uses only `numpy` and `autocross.api`, and reads the live
 `Observation.road` preview. It does not read course files or use network access.
 The v4 controller is in `controllers/hackbama_v4.py`; the previous versions are

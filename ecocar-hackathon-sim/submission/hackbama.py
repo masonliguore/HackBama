@@ -1,4 +1,4 @@
-"""HackBama autocross controller: preview speed and smooth obstacle bypasses.
+"""HackBama V7 candidate: V6 with a narrow, boundary-safe bypass fallback.
 
 Uses only the current road model and published vehicle limits. No course map or disk access.
 """
@@ -23,6 +23,7 @@ class HackBamaController(Controller):
         self.v_max = float(c.get("v_max", 22.0))
         self.kp, self.ki = float(c.get("kp", 0.5)), float(c.get("ki", 0.1))
         self.i_err = 0.0
+        self.v_ref = None
         # The published delay is part of the vehicle interface. Increase preview and
         # lower speed when commands will be applied to an older vehicle state.
         delay = max(vehicle.actuation_delay_steps, 0)
@@ -52,27 +53,23 @@ class HackBamaController(Controller):
         left_offsets = np.zeros_like(s)
         right_offsets = np.zeros_like(s)
         min_boundary_margin = 0.40
-        tight_pair_dist = None
+        tight_pair_ids = set()
+        fallback_ids = set()
         obs_info = []
-        for ob in road.obstacles:
+        for ob_idx, ob in enumerate(road.obstacles):
             if ob.distance < -2.0:
                 continue
-            obs_info.append((ob.distance, ob.lateral_min, ob.lateral_max, ob))
-        for oi_idx, (d, lat_min, lat_max, ob) in enumerate(obs_info):
-            for oj_idx, (d2, lat_min2, lat_max2, ob2) in enumerate(obs_info):
-                if oi_idx == oj_idx:
-                    continue
+            obs_info.append((ob_idx, ob.distance, ob.lateral_min, ob.lateral_max, ob))
+        for oi_idx, (ob_idx, d, lat_min, lat_max, ob) in enumerate(obs_info):
+            for ob_idx2, d2, lat_min2, lat_max2, ob2 in obs_info[oi_idx + 1:]:
                 sep = abs(d2 - d)
                 if sep < 8.0:
                     sides_differ = (lat_max + lat_min) * (lat_max2 + lat_min2) < 0
                     if sides_differ:
-                        gap = max(lat_min2, lat_min) - min(lat_max2, lat_max)
-                        if gap < 0:
-                            gap = min(lat_min, lat_min2)
-                            gap = abs(lat_max - lat_min2) if lat_max < lat_min2 else abs(lat_max2 - lat_min)
+                        gap = max(0.0, max(lat_min2, lat_min) - min(lat_max2, lat_max))
                         if gap < vp.width + 0.5:
-                            tight_pair_dist = min(d, d2)
-        for ob_d, lat_min, lat_max, ob in obs_info:
+                            tight_pair_ids.update((ob_idx, ob_idx2))
+        for ob_idx, ob_d, lat_min, lat_max, ob in obs_info:
             d = ob_d
             i = int(np.clip(np.searchsorted(s, max(d, 0.0)), 0, len(s) - 1))
             wl_i = float(road.preview_width_left[i])
@@ -80,7 +77,7 @@ class HackBamaController(Controller):
             left_limit = wl_i - vp.width / 2 - 0.22
             right_limit = wr_i - vp.width / 2 - 0.22
             clearance = vp.width / 2 + 0.80
-            if tight_pair_dist is not None and abs(d - tight_pair_dist) < 8.0:
+            if ob_idx in tight_pair_ids:
                 clearance = vp.width / 2 + 0.15
             left_target = lat_max + clearance
             right_target = lat_min - clearance
@@ -98,10 +95,21 @@ class HackBamaController(Controller):
                     right_target = min(right_target + adj, lat_min - vp.width / 2 - 0.10)
                 candidates.append(min(right_target, -0.30))
             if not candidates:
-                continue
+                # The preferred 0.80 m gap can reject a passable narrow road.
+                # Share the remaining room between the obstacle and boundary;
+                # retain 0.10 m cone clearance and 0.22 m boundary clearance.
+                min_left = lat_max + vp.width / 2 + 0.10
+                max_right = lat_min - vp.width / 2 - 0.10
+                if min_left <= left_limit:
+                    candidates.append(0.5 * (min_left + left_limit))
+                if max_right >= -right_limit:
+                    candidates.append(0.5 * (max_right - right_limit))
+                if not candidates:
+                    continue
+                fallback_ids.add(ob_idx)
             target = min(candidates, key=abs)
             half_length = 20.0
-            for d2, lmin2, lmax2, _ in obs_info:
+            for _, d2, lmin2, lmax2, _ in obs_info:
                 if d2 != d and abs(d2 - d) < half_length:
                     opp_side = (target > 0) != ((lmin2 + lmax2) < 0)
                     if opp_side:
@@ -121,11 +129,10 @@ class HackBamaController(Controller):
         path += normal * offsets[:, None]
 
         ld = max(self.ld_min, self.k_ld * v + 2.0)
-        if tight_pair_dist is not None:
-            nearest_tight = min(ob.distance for ob in road.obstacles
-                                if ob.distance > -2.0 and tight_pair_dist is not None
-                                and abs(ob.distance - tight_pair_dist) < 8.0)
-            if 0 < nearest_tight < ld + 4.0:
+        if tight_pair_ids:
+            nearest_tight = min((d for ob_idx, d, _, _, _ in obs_info
+                                 if ob_idx in tight_pair_ids and d > 0.0), default=None)
+            if nearest_tight is not None and nearest_tight < ld + 4.0:
                 ld = min(ld, max(nearest_tight * 0.5, 1.5))
         tgt = np.array([np.interp(ld, s, path[:, 0]), np.interp(ld, s, path[:, 1])])
         alpha = math.atan2(tgt[1], max(tgt[0], 0.1))
@@ -135,14 +142,17 @@ class HackBamaController(Controller):
         v_curve = np.minimum(np.sqrt(self.a_lat / np.maximum(np.abs(road.preview_curvature), 1e-4)), self.v_max)
         v_curve[-1] = min(v_curve[-1], float(self.config.get("v_horizon", 6.0)))
         v_tgt = float(np.min(np.sqrt(v_curve ** 2 + 2.0 * self.a_dec * s)))
-        for ob in road.obstacles:
+        for ob_idx, ob in enumerate(road.obstacles):
             if ob.distance > -3.0:
                 v_obs = 11.0
-                if tight_pair_dist is not None and abs(ob.distance - tight_pair_dist) < 8.0:
+                if ob_idx in tight_pair_ids:
                     v_obs = 3.5
+                elif ob_idx in fallback_ids:
+                    v_obs = 6.0
                 v_tgt = min(v_tgt, math.sqrt(v_obs ** 2 + 2.0 * self.a_dec * max(ob.distance - 12.0, 0.0)))
         v_tgt *= min(self.delay_speed_factor, self.grip_speed_factor)
-        self.v_ref = min(v_tgt, getattr(self, "v_ref", v) + self.a_acc * vp.control_dt)
+        previous_ref = v if self.v_ref is None else self.v_ref
+        self.v_ref = min(v_tgt, previous_ref + self.a_acc * vp.control_dt)
         v_tgt = self.v_ref
 
         err = v_tgt - v
