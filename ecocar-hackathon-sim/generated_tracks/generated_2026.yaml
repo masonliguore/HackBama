@@ -1,0 +1,27 @@
+name: gen_open_2026
+closed: false
+width: 5.5
+cone_spacing: 5.0
+start_offset: 8.0
+finish_runoff: 40.0
+origin: [0.0, 0.0, 0.0]
+segments:
+- {type: straight, length: 30.0}
+- {type: slalom, cycles: 3, wavelength: 23.9, swing: 2.3, first: right}
+- {type: straight, length: 42.7}
+- {type: slalom, cycles: 3, wavelength: 22.6, swing: 2.1, first: left}
+- {type: slalom, cycles: 1, wavelength: 27.2, swing: 3.3, first: right}
+- {type: arc, radius: 33.2, angle: -58.7}
+- {type: arc, radius: 11.0, angle: 167.4, width: 6.5}
+- {type: arc, radius: 28.9, angle: -82.9}
+- {type: arc, radius: 9.6, angle: -153.3, width: 6.5}
+- {type: arc, radius: 33.4, angle: 77.9}
+- {type: arc, radius: 11.4, angle: -159.9, width: 6.5}
+- {type: arc, radius: 20.5, angle: 106.2}
+- {type: straight, length: 29.9}
+- {type: straight, length: 23.5}
+- {type: straight, length: 55.0}
+obstacles:
+- {s: 296.5, offset: -2.17, width: 1.55}
+- {s: 453.3, offset: -1.65, width: 1.87}
+- {s: 463.7, offset: -1.51, width: 1.88}

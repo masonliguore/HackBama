@@ -1,0 +1,27 @@
+name: Python engineering template
+
+on:
+  push:
+    paths:
+      - 'templates/engineering-dashboard/**'
+      - '.github/workflows/python-template.yml'
+  pull_request:
+    paths:
+      - 'templates/engineering-dashboard/**'
+      - '.github/workflows/python-template.yml'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: templates/engineering-dashboard
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: templates/engineering-dashboard/requirements.txt
+      - run: python -m pip install -r requirements.txt
+      - run: pytest -q

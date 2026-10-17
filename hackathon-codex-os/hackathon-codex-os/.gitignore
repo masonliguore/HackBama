@@ -1,0 +1,16 @@
+.env
+.env.*
+!.env.example
+node_modules/
+.next/
+dist/
+build/
+__pycache__/
+.pytest_cache/
+.venv/
+.DS_Store
+*.log
+*:Zone.Identifier
+.venv-check/
+coverage/
+*.tsbuildinfo

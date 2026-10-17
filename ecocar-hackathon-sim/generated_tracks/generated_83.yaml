@@ -1,0 +1,27 @@
+name: gen_open_83
+closed: false
+width: 5.5
+cone_spacing: 5.0
+start_offset: 8.0
+finish_runoff: 40.0
+origin: [0.0, 0.0, 0.0]
+segments:
+- {type: straight, length: 30.0}
+- {type: slalom, cycles: 3, wavelength: 27.1, swing: 2.7, first: right}
+- {type: arc, radius: 43.6, angle: -52.7}
+- {type: slalom, cycles: 2, wavelength: 23.7, swing: 3.0, first: right}
+- {type: arc, radius: 30.0, angle: 35.5}
+- {type: straight, length: 43.1}
+- {type: arc, radius: 34.2, angle: 68.7}
+- {type: slalom, cycles: 2, wavelength: 28.7, swing: 2.4, first: right}
+- {type: arc, radius: 39.3, angle: 87.6}
+- {type: slalom, cycles: 1, wavelength: 31.9, swing: 3.4, first: left}
+- {type: arc, radius: 15.8, angle: 68.0}
+- {type: slalom, cycles: 1, wavelength: 32.9, swing: 3.1, first: right}
+- {type: slalom, cycles: 1, wavelength: 29.6, swing: 3.1, first: left}
+- {type: arc, radius: 21.6, angle: 95.4}
+- {type: straight, length: 55.0}
+obstacles:
+- {s: 76.4, offset: -1.64, width: 1.62}
+- {s: 328.8, offset: 1.57, width: 1.77}
+- {s: 516.7, offset: -1.51, width: 1.87}
