@@ -1,0 +1,27 @@
+name: reliability_train_111
+closed: false
+width: 5.5
+cone_spacing: 5.0
+start_offset: 8.0
+finish_runoff: 40.0
+origin: [0.0, 0.0, 0.0]
+segments:
+- {type: straight, length: 30.0}
+- {type: slalom, cycles: 3, wavelength: 24.0, swing: 2.2, first: right}
+- {type: arc, radius: 26.6, angle: -59.1}
+- {type: arc, radius: 43.8, angle: 51.4}
+- {type: arc, radius: 12.8, angle: -111.3}
+- {type: arc, radius: 20.7, angle: 87.5}
+- {type: slalom, cycles: 1, wavelength: 28.0, swing: 2.6, first: left}
+- {type: arc, radius: 34.1, angle: 92.0}
+- {type: straight, length: 18.7}
+- {type: straight, length: 17.8}
+- {type: straight, length: 27.8}
+- {type: slalom, cycles: 3, wavelength: 28.3, swing: 2.4, first: right}
+- {type: arc, radius: 9.2, angle: 165.1, width: 6.5}
+- {type: straight, length: 55.0}
+obstacles:
+- {s: 123.2, offset: -1.63, width: 1.63}
+- {s: 260.7, offset: -1.73, width: 1.45}
+- {s: 358.8, offset: 1.45, width: 1.99}
+- {s: 425.6, offset: -1.65, width: 1.6}

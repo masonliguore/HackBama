@@ -1,0 +1,28 @@
+name: reliability_tune_204
+closed: false
+width: 5.5
+cone_spacing: 5.0
+start_offset: 8.0
+finish_runoff: 40.0
+origin: [0.0, 0.0, 0.0]
+segments:
+- {type: straight, length: 30.0}
+- {type: slalom, cycles: 2, wavelength: 27.8, swing: 2.3, first: right}
+- {type: arc, radius: 11.3, angle: 160.0, width: 6.5}
+- {type: arc, radius: 40.7, angle: -81.7}
+- {type: straight, length: 41.9}
+- {type: arc, radius: 11.0, angle: 172.4, width: 6.5}
+- {type: arc, radius: 12.2, angle: -119.5}
+- {type: arc, radius: 15.6, angle: -102.3}
+- {type: arc, radius: 20.4, angle: 91.4}
+- {type: arc, radius: 19.6, angle: -111.5}
+- {type: straight, length: 31.9}
+- {type: straight, length: 28.9}
+- {type: arc, radius: 32.6, angle: 30.4}
+- {type: arc, radius: 21.7, angle: 71.6}
+- {type: straight, length: 55.0}
+obstacles:
+- {s: 194.2, offset: -1.71, width: 1.49}
+- {s: 251.9, offset: 2.01, width: 1.24}
+- {s: 300.0, offset: 1.61, width: 1.68}
+- {s: 320.5, offset: -1.5, width: 1.89}

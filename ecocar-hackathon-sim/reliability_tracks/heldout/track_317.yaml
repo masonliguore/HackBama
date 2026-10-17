@@ -1,0 +1,27 @@
+name: reliability_heldout_317
+closed: false
+width: 5.5
+cone_spacing: 5.0
+start_offset: 8.0
+finish_runoff: 40.0
+origin: [0.0, 0.0, 0.0]
+segments:
+- {type: straight, length: 30.0}
+- {type: slalom, cycles: 3, wavelength: 27.1, swing: 2.2, first: left}
+- {type: arc, radius: 21.9, angle: -104.0}
+- {type: arc, radius: 11.1, angle: 151.3, width: 6.5}
+- {type: arc, radius: 31.2, angle: 49.5}
+- {type: arc, radius: 15.7, angle: -95.4}
+- {type: arc, radius: 14.4, angle: 87.5}
+- {type: arc, radius: 36.4, angle: -92.4}
+- {type: arc, radius: 14.9, angle: 87.4}
+- {type: slalom, cycles: 2, wavelength: 26.7, swing: 2.3, first: right}
+- {type: arc, radius: 15.7, angle: 69.4}
+- {type: arc, radius: 27.8, angle: 77.4}
+- {type: arc, radius: 19.6, angle: -75.2}
+- {type: straight, length: 55.0}
+obstacles:
+- {s: 74.4, offset: 1.61, width: 1.67}
+- {s: 228.8, offset: -1.64, width: 1.62}
+- {s: 386.7, offset: 1.68, width: 1.54}
+- {s: 441.7, offset: 1.6, width: 1.71}

@@ -1,0 +1,26 @@
+name: reliability_heldout_308
+closed: false
+width: 5.5
+cone_spacing: 5.0
+start_offset: 8.0
+finish_runoff: 40.0
+origin: [0.0, 0.0, 0.0]
+segments:
+- {type: straight, length: 30.0}
+- {type: arc, radius: 26.5, angle: 92.0}
+- {type: slalom, cycles: 3, wavelength: 25.6, swing: 2.8, first: right}
+- {type: arc, radius: 34.1, angle: -65.0}
+- {type: slalom, cycles: 3, wavelength: 28.2, swing: 2.8, first: left}
+- {type: arc, radius: 10.1, angle: -159.0, width: 6.5}
+- {type: straight, length: 32.0}
+- {type: arc, radius: 17.7, angle: 114.2}
+- {type: arc, radius: 29.4, angle: -45.7}
+- {type: slalom, cycles: 1, wavelength: 31.3, swing: 2.8, first: left}
+- {type: arc, radius: 19.3, angle: -94.5}
+- {type: straight, length: 14.6}
+- {type: straight, length: 55.0}
+obstacles:
+- {s: 107.0, offset: -1.84, width: 1.21}
+- {s: 123.9, offset: 1.68, width: 1.54}
+- {s: 190.1, offset: -1.68, width: 1.53}
+- {s: 441.3, offset: 1.64, width: 1.61}
